@@ -64,6 +64,7 @@ def dollar_cost_average_loaded(dataset, startDate, endDate, initial_investment =
     dict_list.append(tmp_dict)
     return pd.DataFrame(dict_list)  
 
+@st.cache 
 def read_data(file):
     data = pd.read_csv(file,parse_dates=['date'])
     data['date'] = data['date'].dt.tz_convert(None)
@@ -71,7 +72,11 @@ def read_data(file):
     return data
 
 
+
 st.title('Trading Frequency')
+
+asset_class = st.selectbox(label = 'Asset Class', 
+						   options = ['SPY', 'VGLT'])
 
 startDate = st.date_input(label = "Start Date", 
 	min_value = datetime.datetime(2000,1,1), 
@@ -83,9 +88,11 @@ endDate = st.date_input(label = "End Date",
 	max_value = datetime.datetime(2021,2,10),
 	value = datetime.datetime(2020,12,10))
 
-df_spy = read_data('./data/raw/SPY_flattened.csv')
+
+
+df_spy = read_data(f'./data/raw/{asset_class}_flattened.csv')
 df = dollar_cost_average_loaded(df_spy, startDate=startDate, endDate=endDate)
 df = df.set_index('dates')
-df['diff'] = df['current_value'] - df['invested']
+df['diff'] = 100*(df['current_value'] - df['invested'])/(df['invested'] + 1)
 ax = df.plot(subplots = True)
 st.write(ax[0].figure)
