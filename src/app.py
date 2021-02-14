@@ -8,6 +8,8 @@ import streamlit as st
 from matplotlib.pyplot import rc
 import datetime
 import pandas_market_calendars as mcal
+from PIL import Image
+import seaborn as sns
 
 def price_diff_loaded(dataset, startDate, endDate, dayprice = 'open'):
     '''
@@ -40,27 +42,21 @@ def dollar_cost_average_loaded(dataset, startDate, endDate, initial_investment =
     #dca_dates = investment_dates_all = pd.bdate_range(start = startDate, end = endDate, freq = str(freq)+"B") #tracks the days when regular investment is made
     
     current_value = initial_investment*price_ratio_loaded(dataset, startDate, startDate, dayprice) 
-    
-    value_at_the_end = initial_investment*price_ratio_loaded(dataset, startDate, endDate, dayprice)
     invested = initial_investment
-    portfolio_value = [current_value]
-    dates = [startDate]
     previous_date = startDate
-    
-    history_dict = {'dates':startDate,'invested':initial_investment,'value_at_end':value_at_the_end,'current_value':current_value}
+    history_dict = {'dates':startDate,'invested':initial_investment,'Portfolio Value':current_value}
     dict_list.append(history_dict)
     
     for date in dca_dates[1:]:
         #add to the sum to track both current and at the end values of the portfolio
         current_value = current_value*price_ratio_loaded(dataset, startDate = previous_date, endDate = date, dayprice = dayprice) + regular_invest 
-        value_at_the_end += price_ratio_loaded(dataset, startDate = date, endDate = endDate, dayprice = dayprice)*regular_invest 
         invested += regular_invest
         #log invested, portfolio_value
-        tmp_dict = {'dates':date,'invested':invested,'value_at_end':value_at_the_end,'current_value':current_value}
+        tmp_dict = {'dates':date,'invested':invested,'Portfolio Value':current_value}
         dict_list.append(tmp_dict)
         previous_date = date   
     current_value = current_value*price_ratio_loaded(dataset, startDate = date, endDate = endDate, dayprice = dayprice)
-    tmp_dict = {'dates':endDate,'invested':invested,'value_at_end':value_at_the_end,'current_value':current_value}
+    tmp_dict = {'dates':endDate,'invested':invested,'Portfolio Value':current_value}
     dict_list.append(tmp_dict)
     return pd.DataFrame(dict_list)  
 
@@ -73,10 +69,19 @@ def read_data(file):
 
 
 
-st.title('Trading Frequency')
+st.title('Trading Frequency Exploration')
 
-asset_class = st.selectbox(label = 'Asset Class', 
-						   options = ['SPY', 'VGLT'])
+asset_class_selection = st.selectbox(label = 'Select Asset Class', 
+						   options = ['S&P500 ETF (SPY)',
+						    		  'Vanguard Long-Term Treasury Index Fund ETF (VGLT)'])
+if asset_class_selection == 'S&P500 ETF (SPY)':
+	asset_class = 'SPY'
+else:
+	asset_class = 'VGLT'	
+
+image = Image.open('./TradingvsInvesting.jpg')
+st.sidebar.image(image, caption='', use_column_width=True)
+#frequency = st.selectbox(label = "")
 
 startDate = st.date_input(label = "Start Date", 
 	min_value = datetime.datetime(2000,1,1), 
@@ -90,9 +95,24 @@ endDate = st.date_input(label = "End Date",
 
 
 
-df_spy = read_data(f'./data/raw/{asset_class}_flattened.csv')
-df = dollar_cost_average_loaded(df_spy, startDate=startDate, endDate=endDate)
+df_data = read_data(f'./data/raw/{asset_class}_flattened.csv')
+df = dollar_cost_average_loaded(df_data, startDate=startDate, endDate=endDate)
 df = df.set_index('dates')
-df['diff'] = 100*(df['current_value'] - df['invested'])/(df['invested'] + 1)
-ax = df.plot(subplots = True)
-st.write(ax[0].figure)
+df['Percent Return'] = 100*(df['Portfolio Value'] - df['invested'])/(df['invested'] + 1)
+
+fig, ax = plt.subplots()
+#ax = df.plot(subplots = True, grid = True)
+sns.set_style("whitegrid")
+fig.set_size_inches(15,7)
+
+ax.plot(df['Percent Return'], color ='black')
+# Set Y axis format 
+#ax.yaxis.set_major_formatter(tick) 
+# Labels
+ax.set_title('Dollar Cost Averaging Return', size=18)
+ax.set_ylabel('Percent Return (%)', size=14)
+ax.set_xlabel('Date', size=14)
+# Show with Legend
+plt.legend()
+
+st.pyplot(plt)
