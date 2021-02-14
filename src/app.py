@@ -84,7 +84,7 @@ endDate = st.date_input(label = "End Date",
 	value = datetime.datetime(2020,12,10))
 
 df_spy = read_data('./data/raw/SPY_flattened.csv')
-df = dollar_cost_average_loaded(df_spy, startDate='2018-07-05', endDate='2021-01-01')
+df = dollar_cost_average_loaded(df_spy, startDate=startDate, endDate=endDate)
 df = df.set_index('dates')
 df['diff'] = df['current_value'] - df['invested']
 ax = df.plot(subplots = True)
