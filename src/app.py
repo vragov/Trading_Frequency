@@ -32,8 +32,6 @@ def dollar_cost_average_loaded(dataset, startDate, endDate, initial_investment =
  
     dict_list = []
    
-    invested = [] #tracks amount of invested capital up to this point
-    portfolio_value = [] #track protfolio value
     nyse = mcal.get_calendar('NYSE')
     early = nyse.schedule(start_date=startDate, end_date=endDate)
     startDate = early.index[0]
@@ -44,7 +42,7 @@ def dollar_cost_average_loaded(dataset, startDate, endDate, initial_investment =
     current_value = initial_investment*price_ratio_loaded(dataset, startDate, startDate, dayprice) 
     invested = initial_investment
     previous_date = startDate
-    history_dict = {'dates':startDate,'invested':initial_investment,'Portfolio Value':current_value}
+    history_dict = {'Dates':startDate,'Invested':initial_investment,'Portfolio Value':current_value}
     dict_list.append(history_dict)
     
     for date in dca_dates[1:]:
@@ -52,11 +50,11 @@ def dollar_cost_average_loaded(dataset, startDate, endDate, initial_investment =
         current_value = current_value*price_ratio_loaded(dataset, startDate = previous_date, endDate = date, dayprice = dayprice) + regular_invest 
         invested += regular_invest
         #log invested, portfolio_value
-        tmp_dict = {'dates':date,'invested':invested,'Portfolio Value':current_value}
+        tmp_dict = {'Dates':date,'Invested':invested,'Portfolio Value':current_value}
         dict_list.append(tmp_dict)
         previous_date = date   
     current_value = current_value*price_ratio_loaded(dataset, startDate = date, endDate = endDate, dayprice = dayprice)
-    tmp_dict = {'dates':endDate,'invested':invested,'Portfolio Value':current_value}
+    tmp_dict = {'Dates':endDate,'Invested':invested,'Portfolio Value':current_value}
     dict_list.append(tmp_dict)
     return pd.DataFrame(dict_list)  
 
@@ -98,7 +96,7 @@ endDate = st.date_input(label = "End Date",
 df_data = read_data(f'./data/raw/{asset_class}_flattened.csv')
 df = dollar_cost_average_loaded(df_data, startDate=startDate, endDate=endDate)
 df = df.set_index('dates')
-df['Percent Return'] = 100*(df['Portfolio Value'] - df['invested'])/(df['invested'] + 1)
+df['Percent Return'] = 100*(df['Portfolio Value'] - df['Invested'])/(df['Invested'] + 0.1)
 
 fig, ax = plt.subplots()
 #ax = df.plot(subplots = True, grid = True)
