@@ -182,7 +182,7 @@ st.sidebar.image(image, caption='', use_column_width=True)
 st.sidebar.header('Explore different trading strategies')
 st.sidebar.subheader('Choose the option to visualize')
 
-dca = st.sidebar.checkbox('Dollar Cost Averaging Calculator', value = True)
+dca = st.sidebar.checkbox('Dollar Cost Averaging Buy and Hold Calculator', value = True)
 
 daily_trading = st.sidebar.checkbox('Daily Trading', value = False)
 
@@ -263,7 +263,7 @@ ax2.legend(['Portfolio Value',"Amount Invested"], fontsize=18)
 
 st.pyplot(plt)
 #$st.write("Annulaized Rate of Return =", (1 + df['Percent Return'][-1]/100, 365/(df.index[-1] - df.index[0]).days)
-st.write("Annualized Rate of Return =", ((1+df['Percent Return'][-1]/100)**(365/(df.index[-1] - df.index[0]).days) - 1)*100,'%')
+st.write("Annualized Rate of Return =","{:.2f}".format(round(((1+df['Percent Return'][-1]/100)**(365/(df.index[-1] - df.index[0]).days) - 1)*100, 2)),'%')
 '''
 ### Now once we familiarized ourselves with the returns provided by the traditional buy-and-hold investment accross multiple asset classes let's move on to the "Daily Trading" to evaluate a few simple day trading strategies. 
 '''
@@ -316,8 +316,8 @@ Let's take a look at the returns we can expect from the "Only Hold Overnight" da
 
     st.pyplot(plt)
 	#$st.write("Annulaized Rate of Return =", (1 + df['Percent Return'][-1]/100, 365/(df.index[-1] - df.index[0]).days)
-    st.write("Annualized Rate of Return for Only Hold Overnight =", ((1+df_hold_overnight['Percent Return'][-1]/100)**(365/(df_hold_overnight.index[-1] - df_hold_overnight.index[0]).days) - 1)*100,'%')
-    st.write("Only Hold Overnight beats Dollar Cost Averaging exactly:",(100*sum(difference>0)/len(difference)),'%')
+    st.write("Annualized Rate of Return for Only Hold Overnight =","{:.2f}".format(round( ((1+df_hold_overnight['Percent Return'][-1]/100)**(365/(df_hold_overnight.index[-1] - df_hold_overnight.index[0]).days) - 1)*100, 2)),'%')
+    st.write("Only Hold Overnight beats Dollar Cost Averaging exactly:","{:.2f}".format(round((100*sum(difference>0)/len(difference)), 2)),'%')
 
     df_dont_hold_overnight = dollar_cost_average_dont_hold_overnight(df_data, startDate=startDate, endDate=endDate, 
 								initial_investment = initial_investment, regular_invest = freq_investment, 
@@ -356,8 +356,8 @@ Let's take a look at the returns we can expect from the "Only Hold Overnight" da
 
     st.pyplot(plt)
 	#$st.write("Annulaized Rate of Return =", (1 + df['Percent Return'][-1]/100, 365/(df.index[-1] - df.index[0]).days)
-    st.write("Annualized Rate of Return for Only Hold Overnight =", ((1+df_hold_overnight['Percent Return'][-1]/100)**(365/(df_hold_overnight.index[-1] - df_hold_overnight.index[0]).days) - 1)*100,'%')
-    st.write("Only Hold Overnight beats Dollar Cost Averaging exactly:",(100*sum(difference2>0)/len(difference2)),'%')
+    st.write("Annualized Rate of Return for Only Hold Overnight =","{:.2f}".format(round(((1+df_hold_overnight['Percent Return'][-1]/100)**(365/(df_hold_overnight.index[-1] - df_hold_overnight.index[0]).days) - 1)*100, 2)),'%')
+    st.write("Only Hold Overnight beats Dollar Cost Averaging exactly:","{:.2f}".format(round((100*sum(difference2>0)/len(difference2)), 2)),'%')
     if (((100*sum(difference>0)/len(difference))<50) and (100*sum(difference2>0)/len(difference2))<50):
 	    st.markdown('''
 ### Clearly Buy and Hold Strategy seem to outperform the other two analysed daily strategies, therefore my recomendation would be to stick to the Buy And Hold approach.
