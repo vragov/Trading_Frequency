@@ -343,10 +343,10 @@ Let's take a look at the returns we can expect from the "Only Hold Overnight" da
     ax2.legend(['Portfolio Value',"Amount Invested"], fontsize=18)
 
     # Get difference with array operations
-    difference = np.array(df_dont_hold_overnight['Portfolio Value']) - np.array(df['Portfolio Value'])
-    ax3.fill_between(df_dont_hold_overnight.index, y1=difference, y2=0, color='green', where=difference > 0, edgecolor='black')
-    ax3.fill_between(df_dont_hold_overnight.index, y1=difference, y2=0, color='red', where=difference < 0, edgecolor='black') 
-    ax3.plot(df_dont_hold_overnight.index, difference, color='black', linewidth=.4)
+    difference2 = np.array(df_dont_hold_overnight['Portfolio Value']) - np.array(df['Portfolio Value'])
+    ax3.fill_between(df_dont_hold_overnight.index, y1=difference2, y2=0, color='green', where=difference2 > 0, edgecolor='black')
+    ax3.fill_between(df_dont_hold_overnight.index, y1=difference2, y2=0, color='red', where=difference2< 0, edgecolor='black') 
+    ax3.plot(df_dont_hold_overnight.index, difference2, color='black', linewidth=.4)
 
     ax3.set_title("Don't Hold Overnight - DCA", size=18)
     ax3.set_ylabel('Current Value Difference($)', size=14)
@@ -357,30 +357,27 @@ Let's take a look at the returns we can expect from the "Only Hold Overnight" da
     st.pyplot(plt)
 	#$st.write("Annulaized Rate of Return =", (1 + df['Percent Return'][-1]/100, 365/(df.index[-1] - df.index[0]).days)
     st.write("Annualized Rate of Return for Only Hold Overnight =", ((1+df_hold_overnight['Percent Return'][-1]/100)**(365/(df_hold_overnight.index[-1] - df_hold_overnight.index[0]).days) - 1)*100,'%')
-    st.write("Only Hold Overnight beats Dollar Cost Averaging exactly:",(100*sum(difference>0)/len(difference)),'%')
+    st.write("Only Hold Overnight beats Dollar Cost Averaging exactly:",(100*sum(difference2>0)/len(difference2)),'%')
+    if (((100*sum(difference>0)/len(difference))<50) and (100*sum(difference2>0)/len(difference2))<50):
+	    st.markdown('''
+### Clearly Buy and Hold Strategy seem to outperform the other two analysed daily strategies, therefore my recomendation would be to stick to the Buy And Hold approach.
+''')
 
 if hypotheses:
-    '''# Hypothesis and results'''
+    '''# Hypothesis and future work'''
 
-    st.markdown('''Before we reach conclusions let's clarify which are the hypothesis which were used for this analysis.
+    st.markdown('''Let's clarify which are the hypothesis which were used for this analysis.
 Too often the hypothesis of a model are overlooked, but if hypothesis aren't realistic, results won't be realistic neither.
 ### Hypothesis of the model:
-1. Buy & hold strategy for the whole holding period with regular investment with regular, equally spaced contributions.
+1. Buy & hold strategy for the whole holding period with regular, equally spaced contributions.
 2. Asset classes are represented by ETFs traded on NYSE. Frequency of the data available for this
-3. Historical stock and bonds data only concern the US market. Hence the bootstrap portfolio of our model is only a benchmark portfolio.
-It is useful to compare different weights among the 3 principal assets (except cash) but it doesn't represent a fully diversified portfolio.
-Having said that, let's proceed to some considerations:
-* Gold is an insurance asset: its average CAGR is only slightly positive with high annual return volatility (indeed geometric sharpe ratio is almost null: that means
-that it is NOT an insurance asset if held individually).
-But you can try by yourself that a portfolio without a certain per cent
-of gold (I guess at least 8-10%) is not pareto efficient.
-* If you increase stocks weight the average CAGR increases (and also the average Omega ratio at 8%), but also volatility CAGR, VaR and CVaR increase.
-* Above a certain stock weight threshold (I estimate about 50%), the risk increases more than the increase of the expected return: geometric sharpe ratio begins to drop.
-Moreover max drawdown metrics begin to increase (in absolute value) in a clear manner.
-* If you increase stock weight beyond a certain threshold (I estimate 85-90%), the portfolio is not anymore pareto efficient (i.e. you can build another
-portfolio with the same expected CAGR but less risky).
-* Based on my simulations, robust portfolios are weigth sets like these: (35% - 50% - 15%), (40% - 40%- 20%), (45% - 30% - 25%).
- Aggressive and pareto efficient portfolios are sets like these: (70% - 15% - 15%), (60% - 30% - 10%).
-  ''')
+3. Historical stock and bonds data only concern three ETFs. 
+
+### Future work:
+1. This analysis can benefit from the addition of the more trading strategies for the comparison with Buy and Hold.
+2. Generally frequency of the trading is the result of the strategy, therefore future strategies that should be analysed should be driven by either fundamental or technical analysis.
+3. Typical investors portfolio typically consists of the combination of the different asset classes and it might be beneficial to consider shift in allocation percentages as trading strategy. 
+''')
+
 
 
