@@ -370,8 +370,9 @@ if hypotheses:
 Too often the hypothesis of a model are overlooked, but if hypothesis aren't realistic, results won't be realistic neither.
 ### Hypothesis of the model:
 1. Buy & hold strategy for the whole holding period with regular, equally spaced contributions.
-2. Asset classes are represented by ETFs traded on NYSE. Frequency of the data available for this
-3. Historical stock and bonds data only concern three ETFs. 
+2. Asset classes are represented by ETFs traded on NYSE. Frequency of the data available through Tiingo API limited analysis to daily frequency trading strategies. 
+3. Historical stock, bonds, and gold data only concerns three ETFs listed on NYSE. 
+4. Data was pulled starting with Jan 1, 2000 and is available until Feb 12, 2020. 
 
 ### Future work:
 1. This analysis can benefit from the addition of the more trading strategies for the comparison with Buy and Hold.
