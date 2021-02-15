@@ -10,6 +10,7 @@ import datetime
 import pandas_market_calendars as mcal
 from PIL import Image
 import seaborn as sns
+import matplotlib.ticker as ticker
 
 def price_diff_loaded(dataset, startDate, endDate, dayprice = 'open'):
     '''
@@ -67,26 +68,69 @@ def read_data(file):
 
 
 
-st.title('Trading Frequency Exploration')
+st.title('Day Trading vs Buy-and-Hold')
+'''
+### What kind of return could you get by following traditional dollar cost averaging strategy? Typical mom-and-pop investor start with certain amount of money and are allocating certain amount of their salary bi-weekly or monthly to their investment account. 
+'''
+'''
+You can choose among 3 asset classes (data pulled using tiingo API):
+    
+1. An ETF that tracks the S&P500 index
+2. An ETF that tracks the US 10-year T-bonds
+3. An ETF that tracks physical Gold
 
-asset_class_selection = st.selectbox(label = 'Select Asset Class', 
-						   options = ['S&P500 ETF (SPY)',
-						    		  'Vanguard Long-Term Treasury Index Fund ETF (VGLT)'])
-if asset_class_selection == 'S&P500 ETF (SPY)':
-	asset_class = 'SPY'
-else:
-	asset_class = 'VGLT'	
+
+Choose the asset class, initial invesment, frequency (bi-weekly or monthly) and size of regular contribution, start and end date of the investigation period.   
+'''
 
 image = Image.open('./TradingvsInvesting.jpg')
 st.sidebar.image(image, caption='', use_column_width=True)
 #frequency = st.selectbox(label = "")
 
-startDate = st.date_input(label = "Start Date", 
+st.sidebar.header('Explore different trading strategies')
+st.sidebar.subheader('Choose the option to visualize')
+
+dca = st.sidebar.checkbox('Dollar Cost Averaging Calculator', value = True)
+
+daily_trading = st.sidebar.checkbox('Daily Trading', value = False)
+
+
+
+asset_class_selection = st.selectbox(label = 'Select Asset Class', 
+						   options = ['S&P500 ETF (SPY)',
+						    		  'Vanguard Long-Term Treasury Index Fund ETF (VGLT)',
+						    		  'Physical Gold ETF (GLD)'])
+
+if asset_class_selection == 'S&P500 ETF (SPY)':
+	asset_class = 'SPY'
+elif asset_class_selection == 'Vanguard Long-Term Treasury Index Fund ETF (VGLT)':
+	asset_class = 'VGLT'
+else:
+	asset_class = 'GLD'	
+
+
+initial_investment = st.slider('Select the size of the initial_investment', min_value = 1000, max_value = 100000, value = 10000)
+
+contribution_selection = st.selectbox(label = 'Frequency of Contributions', 
+						   options = ['Weekly','Bi-weekly',
+						    		  'Monthly'])
+
+if contribution_selection == 'Weekly':
+	invest_freq = 5
+elif contribution_selection == 'Bi-weekly':
+	invest_freq = 10
+else:
+	invest_freq = 25
+
+freq_investment = st.slider('Select the size of the regular contribution', min_value = 10, max_value = 5000, value = 1000)
+
+
+startDate = st.date_input(label = "Investing Start Date", 
 	min_value = datetime.datetime(2000,1,1), 
 	max_value = datetime.datetime(2021,2,10),
-	value = datetime.datetime(2018,7,10))
+	value = datetime.datetime(2014,7,10))
 
-endDate = st.date_input(label = "End Date", 
+endDate = st.date_input(label = "Investment End Date", 
 	min_value = datetime.datetime(2000,1,1), 
 	max_value = datetime.datetime(2021,2,10),
 	value = datetime.datetime(2020,12,10))
@@ -94,23 +138,35 @@ endDate = st.date_input(label = "End Date",
 
 
 df_data = read_data(f'./data/raw/{asset_class}_flattened.csv')
-df = dollar_cost_average_loaded(df_data, startDate=startDate, endDate=endDate)
-df = df.set_index('dates')
-df['Percent Return'] = 100*(df['Portfolio Value'] - df['Invested'])/(df['Invested'] + 0.1)
+df = dollar_cost_average_loaded(df_data, startDate=startDate, endDate=endDate, 
+								initial_investment = initial_investment, regular_invest = freq_investment, 
+								freq = invest_freq, dayprice = 'open')
+df = df.set_index('Dates')
+df['Percent Return'] = 100*(df['Portfolio Value'] - df['Invested'])/(df['Invested'] + 0.001)
 
-fig, ax = plt.subplots()
+fig, (ax1, ax2) = plt.subplots(2)
 #ax = df.plot(subplots = True, grid = True)
 sns.set_style("whitegrid")
-fig.set_size_inches(15,7)
+fig.set_size_inches(20,18)
 
-ax.plot(df['Percent Return'], color ='black')
-# Set Y axis format 
-#ax.yaxis.set_major_formatter(tick) 
+ax1.plot(df['Percent Return'], color ='black')
+#tick = ticker.StrMethodFormatter('${x:,.0f}')
+#ax1.yaxis.set_major_formatter(tick) 
 # Labels
-ax.set_title('Dollar Cost Averaging Return', size=18)
-ax.set_ylabel('Percent Return (%)', size=14)
-ax.set_xlabel('Date', size=14)
-# Show with Legend
-plt.legend()
+ax1.set_title('Dollar Cost Averaging Return', size=18)
+ax1.set_ylabel('Percent Return (%)', size=14)
+ax1.set_xlabel('Date', size=14)
+
+ax2.plot(df['Portfolio Value'], color ='orange')
+ax2.plot(df['Invested'], color ='green')
+tick = ticker.StrMethodFormatter('${x:,.0f}')
+ax2.yaxis.set_major_formatter(tick) 
+# Labels
+ax2.set_title('Amount Invested vs Portfolio Value', size=18)
+ax2.set_ylabel('Amount ($)', size=14)
+ax2.set_xlabel('Date', size=14)
+ax2.legend(['Portfolio Value',"Amount Invested"], fontsize=18)
 
 st.pyplot(plt)
+#$st.write("Annulaized Rate of Return =", (1 + df['Percent Return'][-1]/100, 365/(df.index[-1] - df.index[0]).days)
+st.write("Annualized Rate of Return (in %) =", ((1+df['Percent Return'][-1]/100)**(365/(df.index[-1] - df.index[0]).days) - 1)*100)
