@@ -11,6 +11,7 @@ import pandas_market_calendars as mcal
 from PIL import Image
 import seaborn as sns
 import matplotlib.ticker as ticker
+st.set_option('deprecation.showPyplotGlobalUse', False)
 
 def price_diff_loaded(dataset, startDate, endDate, dayprice = 'open'):
     '''
