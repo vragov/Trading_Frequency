@@ -261,7 +261,7 @@ ax2.set_ylabel('Amount ($)', size=12)
 ax2.set_xlabel('Date', size=12)
 ax2.legend(['Portfolio Value',"Amount Invested"], fontsize=14)
 
-st.pyplot(plt)
+st.pyplot(plt.tight_layout())
 #$st.write("Annulaized Rate of Return =", (1 + df['Percent Return'][-1]/100, 365/(df.index[-1] - df.index[0]).days)
 st.write("Annualized Rate of Return =","{:.2f}".format(round(((1+df['Percent Return'][-1]/100)**(365/(df.index[-1] - df.index[0]).days) - 1)*100, 2)),'%')
 '''
@@ -314,7 +314,7 @@ Let's take a look at the returns we can expect from the "Only Hold Overnight" da
 
     plt.legend(['Amount','Only Hold Overnight > DCA','Only Hold Overnight < DCA'])
 
-    st.pyplot(plt)
+    st.pyplot(plt.tight_layout())
 	#$st.write("Annulaized Rate of Return =", (1 + df['Percent Return'][-1]/100, 365/(df.index[-1] - df.index[0]).days)
     st.write("Annualized Rate of Return for Only Hold Overnight =","{:.2f}".format(round( ((1+df_hold_overnight['Percent Return'][-1]/100)**(365/(df_hold_overnight.index[-1] - df_hold_overnight.index[0]).days) - 1)*100, 2)),'%')
     st.write("Only Hold Overnight beats Dollar Cost Averaging exactly:","{:.2f}".format(round((100*sum(difference>0)/len(difference)), 2)),'%')
@@ -354,7 +354,7 @@ Let's take a look at the returns we can expect from the "Only Hold Overnight" da
 
     plt.legend(['Amount',"Don't Hold Overnight > DCA"," Don't Only Hold Overnight < DCA"])
 
-    st.pyplot(plt)
+    st.pyplot(plt.tight_layout())
 	#$st.write("Annulaized Rate of Return =", (1 + df['Percent Return'][-1]/100, 365/(df.index[-1] - df.index[0]).days)
     st.write("Annualized Rate of Return for Only Hold Overnight =","{:.2f}".format(round(((1+df_hold_overnight['Percent Return'][-1]/100)**(365/(df_hold_overnight.index[-1] - df_hold_overnight.index[0]).days) - 1)*100, 2)),'%')
     st.write("Only Hold Overnight beats Dollar Cost Averaging exactly:","{:.2f}".format(round((100*sum(difference2>0)/len(difference2)), 2)),'%')
