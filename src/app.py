@@ -365,7 +365,7 @@ Let's take a look at the returns we can expect from the "Only Hold Overnight" da
 ''')
 
 if hypotheses:
-    '''# Hypothesis and future work'''
+    '''# Assumptions and future work'''
 
     st.markdown('''Let's clarify which are the assumptions which were used for this analysis.
 Too often the assumptions of a model are overlooked, but if assumptions aren't realistic, results won't be realistic neither.
