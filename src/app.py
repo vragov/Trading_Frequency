@@ -222,7 +222,7 @@ freq_investment = st.slider('Select the size of the regular contribution', min_v
 startDate = st.date_input(label = "Investing Start Date", 
 	min_value = datetime.datetime(2000,1,1), 
 	max_value = datetime.datetime(2021,2,10),
-	value = datetime.datetime(2014,7,10))
+	value = datetime.datetime(2017,7,10))
 
 endDate = st.date_input(label = "Investment End Date", 
 	min_value = datetime.datetime(2000,1,1), 
