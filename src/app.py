@@ -61,7 +61,7 @@ def dollar_cost_average_loaded(dataset, startDate, endDate, initial_investment =
 
 def hold_overnight_ratio(dataset, startDate, endDate):
     '''
-    This function calculates the difference assuming
+    This function calculates the ratio for the "Hold Overnight" Daily Trading strategy
     '''
     price_ratio_list = (dataset.loc[startDate:endDate,'open'][1:] - dataset.loc[startDate:endDate,'close'][:-1])/(dataset.loc[startDate:endDate,'close'][:-1]+0.000001)
     running_price_ratio = np.cumprod(1 + price_ratio_list)
@@ -70,7 +70,7 @@ def hold_overnight_ratio(dataset, startDate, endDate):
 
 def dollar_cost_average_hold_overnight(dataset, startDate, endDate, initial_investment = 0, regular_invest = 1000, freq = 10):
     '''
-    Function takes in the dataset for a particular asset class, start and end dates, dayprice to use and calculates final value of the portfolio as a result of the dollar cost averaging
+    This function calculates the Hold Overnight Dollar Cost averaging results for the "Hold Overnight" Daily Trading strategy
     ''' 
  
     dict_list = []
@@ -108,7 +108,7 @@ def dollar_cost_average_hold_overnight(dataset, startDate, endDate, initial_inve
    
 def dont_hold_overnight_ratio(dataset, startDate, endDate):
     '''
-    This function calculates the difference assuming
+    This function calculates the ratio for the "Don't Hold Overnight" Daily Trading strategy
     '''
     price_ratio_list = (dataset.loc[startDate:endDate,'close'] - dataset.loc[startDate:endDate,'open'])/(dataset.loc[startDate:endDate,'open']+0.000001)
     running_price_ratio = np.cumprod(1 + price_ratio_list)
@@ -117,7 +117,7 @@ def dont_hold_overnight_ratio(dataset, startDate, endDate):
 
 def dollar_cost_average_dont_hold_overnight(dataset, startDate, endDate, initial_investment = 0, regular_invest = 1000, freq = 10):
     '''
-    Function takes in the dataset for a particular asset class, start and end dates, dayprice to use and calculates final value of the portfolio as a result of the dollar cost averaging
+    This function calculates the"Don't Hold" Overnight Dollar Cost averaging results for the "Hold Overnight" Daily Trading strategy
     ''' 
  
     dict_list = []
@@ -172,7 +172,7 @@ You can choose among 3 asset classes (data pulled using tiingo API):
 3. An ETF that tracks physical Gold
 
 
-Choose the asset class, initial invesment, frequency (bi-weekly or monthly) and size of regular contribution, start and end date of the investigation period.   
+Choose the asset class, initial invesment, frequency (weekly, bi-weekly or monthly) and size of regular contribution, start and end date of the investigation period.   
 '''
 
 image = Image.open('./TradingvsInvesting.jpg')
@@ -185,6 +185,8 @@ st.sidebar.subheader('Choose the option to visualize')
 dca = st.sidebar.checkbox('Dollar Cost Averaging Calculator', value = True)
 
 daily_trading = st.sidebar.checkbox('Daily Trading', value = False)
+
+hypotheses = st.sidebar.checkbox('Hypotheses Used in this analysis', value = False)
 
 
 
@@ -263,7 +265,7 @@ st.pyplot(plt)
 #$st.write("Annulaized Rate of Return =", (1 + df['Percent Return'][-1]/100, 365/(df.index[-1] - df.index[0]).days)
 st.write("Annualized Rate of Return =", ((1+df['Percent Return'][-1]/100)**(365/(df.index[-1] - df.index[0]).days) - 1)*100,'%')
 '''
-### Now once we familirized ourselves with the returns provided by the traditional buy-and-hold investment accross multiple asset classes let's move on to the "Daily Trading" to evaluate a few simple day trading strategies. 
+### Now once we familiarized ourselves with the returns provided by the traditional buy-and-hold investment accross multiple asset classes let's move on to the "Daily Trading" to evaluate a few simple day trading strategies. 
 '''
 
 
@@ -271,10 +273,10 @@ if daily_trading:
     '''# Evaluating two daily trading strategies against DCA (Buy-and-Hold Dollar Cost Averaging)'''
 
     st.markdown('''Based on the price data availabily (Open, Close, Low, High daily prices) I came up with two daily strategies that will be evaluated and compared to buy-and-hold stretegy above: 
-* The first strategy is called "only hold overnight", where investor buys stock at the close and sells at the open of next day. This way investor only makes money during the period when the stock market is closed. 
+* The first strategy is called "only hold overnight", where investor buys asset at the close and sells at the open of next day. This way investor only makes money during the period when the stock market is closed. 
 * The second strategy is called "don't hold overnight", where investor buys at the open and sells at the close, holding security only while NYSE is open. 
 
-Now let's take a look at the returns we can expect from the first daily trading streategy using the same amounts as selected for the Dollar Cost Averaging:
+Let's take a look at the returns we can expect from the "Only Hold Overnight" daily trading streategy using the same amounts as selected for the Dollar Cost Averaging:
 	''')
 
     df_hold_overnight = dollar_cost_average_hold_overnight(df_data, startDate=startDate, endDate=endDate, 
@@ -357,28 +359,28 @@ Now let's take a look at the returns we can expect from the first daily trading 
     st.write("Annualized Rate of Return for Only Hold Overnight =", ((1+df_hold_overnight['Percent Return'][-1]/100)**(365/(df_hold_overnight.index[-1] - df_hold_overnight.index[0]).days) - 1)*100,'%')
     st.write("Only Hold Overnight beats Dollar Cost Averaging exactly:",(100*sum(difference>0)/len(difference)),'%')
 
+if hypotheses:
+    '''# Hypothesis and results'''
 
-# if considerations:
-#     '''# Hypothesis and results'''
-#     st.markdown('''Before we reach conclusions let's clarify which are the hypothesis.
-# Too often the hypothesis of a model are overlooked, but if hypothesis aren't realistic, results won't be realistic neither.
-# ### Hypothesis of the model:
-# 1. Buy & hold strategy for the whole holding period
-# 2. The empirical future annual returns distribution of the 3 assets won't be dramatically different compared to that of the past 69 years.
-# This means that in the future the stock market can loose even 50% one year, but the model doesn't take into account the fact
-# that the stock market can loose 100% or that both stocks and bonds loose 30% in one year.
-# 3. Historical stock and bonds data only concern the US market. Hence the bootstrap portfolio of our model is only a benchmark portfolio.
-# It is useful to compare different weights among the 3 principal assets (except cash) but it doesn't represent a fully diversified portfolio.
-# Having said that, let's proceed to some considerations:
-# * Gold is an insurance asset: its average CAGR is only slightly positive with high annual return volatility (indeed geometric sharpe ratio is almost null: that means
-# that it is NOT an insurance asset if held individually).
-# But you can try by yourself that a portfolio without a certain per cent
-# of gold (I guess at least 8-10%) is not pareto efficient.
-# * If you increase stocks weight the average CAGR increases (and also the average Omega ratio at 8%), but also volatility CAGR, VaR and CVaR increase.
-# * Above a certain stock weight threshold (I estimate about 50%), the risk increases more than the increase of the expected return: geometric sharpe ratio begins to drop.
-# Moreover max drawdown metrics begin to increase (in absolute value) in a clear manner.
-# * If you increase stock weight beyond a certain threshold (I estimate 85-90%), the portfolio is not anymore pareto efficient (i.e. you can build another
-# portfolio with the same expected CAGR but less risky).
-# * Based on my simulations, robust portfolios are weigth sets like these: (35% - 50% - 15%), (40% - 40%- 20%), (45% - 30% - 25%).
-#  Aggressive and pareto efficient portfolios are sets like these: (70% - 15% - 15%), (60% - 30% - 10%).
-#   ''')
+    st.markdown('''Before we reach conclusions let's clarify which are the hypothesis which were used for this analysis.
+Too often the hypothesis of a model are overlooked, but if hypothesis aren't realistic, results won't be realistic neither.
+### Hypothesis of the model:
+1. Buy & hold strategy for the whole holding period with regular investment with regular, equally spaced contributions.
+2. Asset classes are represented by ETFs traded on NYSE. Frequency of the data available for this
+3. Historical stock and bonds data only concern the US market. Hence the bootstrap portfolio of our model is only a benchmark portfolio.
+It is useful to compare different weights among the 3 principal assets (except cash) but it doesn't represent a fully diversified portfolio.
+Having said that, let's proceed to some considerations:
+* Gold is an insurance asset: its average CAGR is only slightly positive with high annual return volatility (indeed geometric sharpe ratio is almost null: that means
+that it is NOT an insurance asset if held individually).
+But you can try by yourself that a portfolio without a certain per cent
+of gold (I guess at least 8-10%) is not pareto efficient.
+* If you increase stocks weight the average CAGR increases (and also the average Omega ratio at 8%), but also volatility CAGR, VaR and CVaR increase.
+* Above a certain stock weight threshold (I estimate about 50%), the risk increases more than the increase of the expected return: geometric sharpe ratio begins to drop.
+Moreover max drawdown metrics begin to increase (in absolute value) in a clear manner.
+* If you increase stock weight beyond a certain threshold (I estimate 85-90%), the portfolio is not anymore pareto efficient (i.e. you can build another
+portfolio with the same expected CAGR but less risky).
+* Based on my simulations, robust portfolios are weigth sets like these: (35% - 50% - 15%), (40% - 40%- 20%), (45% - 30% - 25%).
+ Aggressive and pareto efficient portfolios are sets like these: (70% - 15% - 15%), (60% - 30% - 10%).
+  ''')
+
+
