@@ -186,7 +186,7 @@ dca = st.sidebar.checkbox('Dollar Cost Averaging Buy and Hold Calculator', value
 
 daily_trading = st.sidebar.checkbox('Daily Trading', value = False)
 
-hypotheses = st.sidebar.checkbox('Hypotheses Used in this analysis', value = False)
+hypotheses = st.sidebar.checkbox('Assumptions Used in this analysis', value = False)
 
 
 
@@ -241,25 +241,25 @@ df['Percent Return'] = 100*(df['Portfolio Value'] - df['Invested'])/(df['Investe
 fig, (ax1, ax2) = plt.subplots(2)
 #ax = df.plot(subplots = True, grid = True)
 sns.set_style("whitegrid")
-fig.set_size_inches(10,9)
+fig.set_size_inches(10,10)
 
 ax1.plot(df['Percent Return'], color ='black')
 #tick = ticker.StrMethodFormatter('${x:,.0f}')
 #ax1.yaxis.set_major_formatter(tick) 
 # Labels
-ax1.set_title('Dollar Cost Averaging Return', size=18)
-ax1.set_ylabel('Percent Return (%)', size=14)
-ax1.set_xlabel('Date', size=14)
+ax1.set_title('Dollar Cost Averaging Return', size=14)
+ax1.set_ylabel('Percent Return (%)', size=12)
+ax1.set_xlabel('Date', size=12)
 
 ax2.plot(df['Portfolio Value'], color ='orange')
 ax2.plot(df['Invested'], color ='green')
 tick = ticker.StrMethodFormatter('${x:,.0f}')
 ax2.yaxis.set_major_formatter(tick) 
 # Labels
-ax2.set_title('Amount Invested vs Portfolio Value', size=18)
-ax2.set_ylabel('Amount ($)', size=14)
-ax2.set_xlabel('Date', size=14)
-ax2.legend(['Portfolio Value',"Amount Invested"], fontsize=18)
+ax2.set_title('Amount Invested vs Portfolio Value', size=14)
+ax2.set_ylabel('Amount ($)', size=12)
+ax2.set_xlabel('Date', size=12)
+ax2.legend(['Portfolio Value',"Amount Invested"], fontsize=14)
 
 st.pyplot(plt)
 #$st.write("Annulaized Rate of Return =", (1 + df['Percent Return'][-1]/100, 365/(df.index[-1] - df.index[0]).days)
@@ -285,22 +285,22 @@ Let's take a look at the returns we can expect from the "Only Hold Overnight" da
     df_hold_overnight['Percent Return'] = 100*(df_hold_overnight['Portfolio Value'] - df_hold_overnight['Invested'])/(df_hold_overnight['Invested'] + 0.001)
     fig, (ax1, ax2, ax3) = plt.subplots(3)
 	#ax = df.plot(subplots = True, grid = True)
-    fig.set_size_inches(10,9)
+    fig.set_size_inches(10,12)
     ax1.plot(df_hold_overnight['Percent Return'], color ='black')
 	
-    ax1.set_title('Only Hold Overnight', size=18)
-    ax1.set_ylabel('Percent Return (%)', size=14)
-    ax1.set_xlabel('Date', size=14)
+    ax1.set_title('Only Hold Overnight', size=14)
+    ax1.set_ylabel('Percent Return (%)', size=12)
+    ax1.set_xlabel('Date', size=12)
 
     ax2.plot(df_hold_overnight['Portfolio Value'], color ='orange')
     ax2.plot(df_hold_overnight['Invested'], color ='green')
     tick = ticker.StrMethodFormatter('${x:,.0f}')
     ax2.yaxis.set_major_formatter(tick) 
 	# Labels
-    ax2.set_title('Amount Invested vs Portfolio Value', size=18)
-    ax2.set_ylabel('Amount ($)', size=14)
-    ax2.set_xlabel('Date', size=14)
-    ax2.legend(['Portfolio Value',"Amount Invested"], fontsize=18)
+    ax2.set_title('Amount Invested vs Portfolio Value', size=14)
+    ax2.set_ylabel('Amount ($)', size=12)
+    ax2.set_xlabel('Date', size=12)
+    ax2.legend(['Portfolio Value',"Amount Invested"], fontsize=14)
 
     # Get difference with array operations
     difference = np.array(df_hold_overnight['Portfolio Value']) - np.array(df['Portfolio Value'])
@@ -308,9 +308,9 @@ Let's take a look at the returns we can expect from the "Only Hold Overnight" da
     ax3.fill_between(df_hold_overnight.index, y1=difference, y2=0, color='red', where=difference < 0, edgecolor='black') 
     ax3.plot(df_hold_overnight.index, difference, color='black', linewidth=.4)
 
-    ax3.set_title('Only Hold Overnight - DCA', size=18)
-    ax3.set_ylabel('Current Value Difference($)', size=14)
-    ax3.set_xlabel('Date of Investment', size=14)
+    ax3.set_title('Only Hold Overnight - DCA', size=14)
+    ax3.set_ylabel('Current Value Difference($)', size=12)
+    ax3.set_xlabel('Date of Investment', size=12)
 
     plt.legend(['Amount','Only Hold Overnight > DCA','Only Hold Overnight < DCA'])
 
@@ -325,22 +325,22 @@ Let's take a look at the returns we can expect from the "Only Hold Overnight" da
     df_dont_hold_overnight['Percent Return'] = 100*(df_dont_hold_overnight['Portfolio Value'] - df_dont_hold_overnight['Invested'])/(df_dont_hold_overnight['Invested'] + 0.001)
     fig, (ax1, ax2, ax3) = plt.subplots(3)
 	#ax = df.plot(subplots = True, grid = True)
-    fig.set_size_inches(10,9)
+    fig.set_size_inches(10,12)
     ax1.plot(df_dont_hold_overnight['Percent Return'], color ='black')
 	
-    ax1.set_title("Don't Hold Overnight", size=18)
-    ax1.set_ylabel('Percent Return (%)', size=14)
-    ax1.set_xlabel('Date', size=14)
+    ax1.set_title("Don't Hold Overnight", size=14)
+    ax1.set_ylabel('Percent Return (%)', size=12)
+    ax1.set_xlabel('Date', size=12)
 
     ax2.plot(df_dont_hold_overnight['Portfolio Value'], color ='orange')
     ax2.plot(df_dont_hold_overnight['Invested'], color ='green')
     tick = ticker.StrMethodFormatter('${x:,.0f}')
     ax2.yaxis.set_major_formatter(tick) 
 	# Labels
-    ax2.set_title('Amount Invested vs Portfolio Value', size=18)
-    ax2.set_ylabel('Amount ($)', size=14)
-    ax2.set_xlabel('Date', size=14)
-    ax2.legend(['Portfolio Value',"Amount Invested"], fontsize=18)
+    ax2.set_title('Amount Invested vs Portfolio Value', size=14)
+    ax2.set_ylabel('Amount ($)', size=12)
+    ax2.set_xlabel('Date', size=12)
+    ax2.legend(['Portfolio Value',"Amount Invested"], fontsize=14)
 
     # Get difference with array operations
     difference2 = np.array(df_dont_hold_overnight['Portfolio Value']) - np.array(df['Portfolio Value'])
@@ -348,9 +348,9 @@ Let's take a look at the returns we can expect from the "Only Hold Overnight" da
     ax3.fill_between(df_dont_hold_overnight.index, y1=difference2, y2=0, color='red', where=difference2< 0, edgecolor='black') 
     ax3.plot(df_dont_hold_overnight.index, difference2, color='black', linewidth=.4)
 
-    ax3.set_title("Don't Hold Overnight - DCA", size=18)
-    ax3.set_ylabel('Current Value Difference($)', size=14)
-    ax3.set_xlabel('Date of Investment', size=14)
+    ax3.set_title("Don't Hold Overnight - DCA", size=14)
+    ax3.set_ylabel('Current Value Difference($)', size=12)
+    ax3.set_xlabel('Date of Investment', size=12)
 
     plt.legend(['Amount',"Don't Hold Overnight > DCA"," Don't Only Hold Overnight < DCA"])
 
@@ -366,9 +366,9 @@ Let's take a look at the returns we can expect from the "Only Hold Overnight" da
 if hypotheses:
     '''# Hypothesis and future work'''
 
-    st.markdown('''Let's clarify which are the hypothesis which were used for this analysis.
-Too often the hypothesis of a model are overlooked, but if hypothesis aren't realistic, results won't be realistic neither.
-### Hypothesis of the model:
+    st.markdown('''Let's clarify which are the assumptions which were used for this analysis.
+Too often the assumptions of a model are overlooked, but if assumptions aren't realistic, results won't be realistic neither.
+### Assumptions of the model:
 1. Buy & hold strategy for the whole holding period with regular, equally spaced contributions.
 2. Asset classes are represented by ETFs traded on NYSE. Frequency of the data available through Tiingo API limited analysis to daily frequency trading strategies. 
 3. Historical stock, bonds, and gold data only concerns three ETFs listed on NYSE. 
