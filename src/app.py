@@ -285,7 +285,7 @@ Let's take a look at the returns we can expect from the "Only Hold Overnight" da
     df_hold_overnight['Percent Return'] = 100*(df_hold_overnight['Portfolio Value'] - df_hold_overnight['Invested'])/(df_hold_overnight['Invested'] + 0.001)
     fig, (ax1, ax2, ax3) = plt.subplots(3)
 	#ax = df.plot(subplots = True, grid = True)
-    fig.set_size_inches(10,12)
+    fig.set_size_inches(10,15)
     ax1.plot(df_hold_overnight['Percent Return'], color ='black')
 	
     ax1.set_title('Only Hold Overnight', size=14)
@@ -325,7 +325,7 @@ Let's take a look at the returns we can expect from the "Only Hold Overnight" da
     df_dont_hold_overnight['Percent Return'] = 100*(df_dont_hold_overnight['Portfolio Value'] - df_dont_hold_overnight['Invested'])/(df_dont_hold_overnight['Invested'] + 0.001)
     fig, (ax1, ax2, ax3) = plt.subplots(3)
 	#ax = df.plot(subplots = True, grid = True)
-    fig.set_size_inches(10,12)
+    fig.set_size_inches(10,15)
     ax1.plot(df_dont_hold_overnight['Percent Return'], color ='black')
 	
     ax1.set_title("Don't Hold Overnight", size=14)
